@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "basic": {
+      "cookie": "",
+      "delete": true,
+      "failure_mode": "new_node",
+      "note": "",
+      "type": "ip",
+      "url": ""
+    }
+  }
+}
+
+

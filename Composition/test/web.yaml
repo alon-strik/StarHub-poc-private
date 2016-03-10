@@ -1,0 +1,144 @@
+tosca_definitions_version: cloudify_dsl_1_2
+
+imports:
+  - cloudify-types.yaml
+  - fabric-plugin.yaml
+  - plugins/cloudify-openstack-plugin/plugin.yaml
+  - plugins/cloudify-proxy-plugin/plugin.yaml
+
+inputs:
+
+  application_network_name:
+    default: Tenant-a-APPnetwork
+    type: string
+
+  application_network_subnet_name:
+    default: Tenant-a-APPnetwork-subnet
+    type: string
+
+  image_id:
+    default: 'e33f993a-79eb-4187-8a91-b28b10cfbb45' # agent  centos no cloud-init
+    #default: '3cc7d237-2009-48a8-8dee-cb956d70f057' # agent centos 7
+    type: string
+
+  flavor_id:
+    default: '3'
+    type: string
+
+  agent_name:
+    type: string
+    default: root
+
+  agent_password:
+    type: string
+    default: password
+
+  private_key_name:
+    type: string
+    default:  /root/.ssh/agent_key.pem
+
+  lb_blueprint_id:
+    default: vtm
+    type: string
+    description: Load Balancer blueprint ID
+
+  fw_blueprint_id:
+    default: fw
+    type: string
+    description: FW blueprint ID
+
+  management_network_name:
+     type: string
+     default: cloudify-management-network
+
+node_types:
+
+  port_node_type:
+     derived_from: cloudify.nodes.SoftwareComponent
+
+node_templates:
+
+# Create an Application Network
+
+  application_network:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      resource_id: { get_input: application_network_name }
+      use_external_resource : false
+
+  application_network_subnet:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      resource_id: { get_input: application_network_subnet_name }
+      use_external_resource : false
+      subnet:
+        ip_version: 4
+        cidr: 172.20.0.0/29
+    relationships:
+      - target: application_network
+        type: cloudify.relationships.contained_in
+
+  management_network:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: management_network_name }
+
+
+# Create an Application VM
+
+  webServer1:
+    type: cloudify.openstack.nodes.Server
+    properties:
+      install_agent: false
+      server:
+        image: { get_input: image_id }
+        flavor: { get_input: flavor_id }
+#    interfaces:
+#      cloudify.interfaces.lifecycle:
+#       create:
+#         inputs:
+#           args:
+#             nics:
+#                - net-id: { get_attribute: [ management_network, external_id ] }
+#                - net-id: { get_attribute: [ application_network, external_id ] }
+
+    relationships:
+        - target: webServer1PortConfig
+          type: cloudify.relationships.connected_to
+        - target: application_network
+          type: cloudify.relationships.connected_to
+        - target: management_network
+          type: cloudify.relationships.connected_to
+
+
+  networkConfig:
+    type: cloudify.nodes.Compute
+    properties:
+      install_agent: false
+
+  webServer1PortConfig:
+    type: port_node_type
+    relationships:
+        - target: application_network
+          type: cloudify.relationships.depends_on
+
+        - target: networkConfig
+          type: cloudify.relationships.contained_in
+
+  webServer1Setup:
+    type: port_node_type
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        start:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            script_path: scripts/setWebServer.sh
+            fabric_env:
+               user: { get_input: agent_name }
+               password: { get_input: agent_password }
+               host_string: { get_attribute: [ webServer1, ip ] }     
+    relationships:
+        - target: webServer1
+          type: cloudify.relationships.contained_in
+

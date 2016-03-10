@@ -1,0 +1,156 @@
+{
+  "properties": {
+    "basic": {
+      "adminMasterXMLIP": "192.168.122.84",
+      "adminSlaveXMLIP": "192.168.122.84",
+      "appliance_sysctl": [],
+      "authenticationServerIP": "192.168.122.84",
+      "cloud_platform": "",
+      "location": "",
+      "nameip": "192.168.122.84",
+      "num_aptimizer_threads": 0,
+      "num_children": 0,
+      "numberOfCPUs": 1,
+      "restServerPort": 11003,
+      "trafficip": [],
+      "updaterIP": "192.168.122.84"
+    },
+    "appliance": {
+      "gateway_ipv4": "10.0.2.254",
+      "gateway_ipv6": "",
+      "hostname": "DR-vTM-02",
+      "hosts": [],
+      "if": [
+        {
+          "name": "eth0",
+          "autoneg": true,
+          "mtu": 1500
+        },
+        {
+          "name": "eth1",
+          "autoneg": true,
+          "mtu": 1500
+        },
+        {
+          "name": "eth2",
+          "autoneg": true,
+          "mtu": 1500
+        }
+      ],
+      "ip": [
+        {
+          "name": "eth0",
+          "addr": "192.168.122.84",
+          "isexternal": false,
+          "mask": "255.255.255.0"
+        },
+        {
+          "name": "eth1",
+          "addr": "10.0.2.42",
+          "isexternal": false,
+          "mask": "255.255.255.0"
+        },
+        {
+          "name": "eth2",
+          "addr": "10.0.102.42",
+          "isexternal": false,
+          "mask": "255.255.255.0"
+        }
+      ],
+      "ipv4_forwarding": false,
+      "licence_agreed": true,
+      "manageazureroutes": true,
+      "manageec2conf": true,
+      "manageiptrans": true,
+      "managereturnpath": true,
+      "managevpcconf": true,
+      "name_servers": [
+        "10.88.88.57"
+      ],
+      "ntpservers": [
+        "10.88.88.254"
+      ],
+      "routes": [
+        {
+          "name": "172.18.19.0",
+          "gw": "10.88.88.254",
+          "if": "eth0",
+          "mask": "255.255.255.0"
+        },
+        {
+          "name": "100.100.100.0",
+          "gw": "10.88.88.254",
+          "if": "eth0",
+          "mask": "255.255.255.0"
+        }
+      ],
+      "search_domains": [
+        "brocade.com",
+        "brocade.local"
+      ],
+      "shim_client_id": "",
+      "shim_client_key": "",
+      "shim_enabled": false,
+      "shim_ips": "",
+      "shim_load_balance": "round_robin",
+      "shim_log_level": "notice",
+      "shim_mode": "portal",
+      "shim_portal_url": "",
+      "shim_proxy_host": "",
+      "shim_proxy_port": "",
+      "ssh_enabled": true,
+      "ssh_port": 22,
+      "timezone": "Asia/Singapore",
+      "vlans": []
+    },
+    "autodiscover": {},
+    "cluster_comms": {
+      "allow_update": true,
+      "bind_ip": "*",
+      "external_ip": "",
+      "port": 9080
+    },
+    "ec2": {
+      "trafficips_public_enis": []
+    },
+    "fault_tolerance": {
+      "bgp_router_id": "",
+      "ospfv2_ip": "",
+      "ospfv2_neighbor_addrs": [
+        "%gateway%"
+      ]
+    },
+    "iptables": {
+      "config_enabled": true
+    },
+    "iptrans": {
+      "fwmark": 320,
+      "iptables_enabled": true,
+      "routing_table": 320
+    },
+    "java": {
+      "port": 9060
+    },
+    "kerberos": {},
+    "rest_api": {
+      "bind_ips": [
+        "*"
+      ],
+      "port": 9070
+    },
+    "snmp": {
+      "allow": [
+        "all"
+      ],
+      "auth_password": "",
+      "bind_ip": "*",
+      "community": "public",
+      "enabled": true,
+      "hash_algorithm": "md5",
+      "port": "default",
+      "priv_password": "",
+      "security_level": "noauthnopriv",
+      "username": ""
+    }
+  }
+}

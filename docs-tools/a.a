@@ -1,0 +1,14 @@
+gigaFirewall # config router static
+config router static
+
+gigaFirewall (static) # edit 1
+
+gigaFirewall (1) # set dst 0.0.0.0/24
+
+gigaFirewall (1) # set gateway 192.168.122.1
+
+gigaFirewall (1) # set device port2
+
+gigaFirewall (1) # end
+
+gigaFirewall # 

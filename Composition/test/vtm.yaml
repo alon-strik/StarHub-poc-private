@@ -1,0 +1,153 @@
+tosca_definitions_version: cloudify_dsl_1_2
+
+############################################
+# Brocade vTM - traffic managment LB - VNF
+############################################
+
+imports:
+    - cloudify-types.yaml
+    - plugin.yaml
+    - fabric-plugin.yaml
+
+inputs:
+
+  agent_user:
+    default: admin
+
+  vtm_image:
+    #default: 'e9e86c46-9fd4-445b-ac00-90a7478ead3e' # basic
+    default: '8e2e6383-e354-4092-ad06-dd6fd1331dd7' # snapshot vTM_CFY_VN
+
+  flavor:
+    default: '3'
+
+  agent_password:
+    default: admin
+
+# inpute from composition
+  lb_network:
+    type: string
+    default: Tenant-a-LBnetwork
+
+# inpute from composition
+  lb_network_subnet:
+    type: string
+    default: Tenant-a-LBnetwork-subnet
+
+  external_network_name:
+    type: string
+    default: VIO-External-01_VLAN301
+
+  management_network_name:
+    default: cloudify-management-network
+    type: string
+
+  management_subnet_name:
+    default: cloudify-management-network-subnet
+    type: string
+
+
+node_types:
+
+  port_node_type:
+    derived_from: cloudify.nodes.SoftwareComponent
+
+node_templates:
+
+  vtmServer:
+    type: cloudify.openstack.nodes.Server
+    properties:
+      install_agent: false
+      image: { get_input: vtm_image }
+      flavor: { get_input: flavor }
+    interfaces:
+      cloudify.interfaces.lifecycle:
+       create:
+         inputs:
+           args:
+             nics:
+                - port-id: { get_attribute: [ manager_port, external_id ] }
+                - port-id: { get_attribute: [ lb_network_port, external_id ] }
+
+    relationships:
+#        - target: vtmPortConfig
+#          type: cloudify.relationships.connected_to
+        - target: lb_network_port
+          type: cloudify.relationships.connected_to
+#
+#      - target: server_float_ip
+#        type: cloudify.openstack.server_connected_to_floating_ip
+
+#  networkConfig:
+#    type: cloudify.nodes.Compute
+#    properties:
+#      install_agent: false
+
+#  vtmPortConfig:
+#    type: port_node_type
+#    relationships:
+#        - target: lb_network_port
+#          type: cloudify.relationships.depends_on
+#        - target: networkConfig
+#          type: cloudify.relationships.contained_in
+
+#  LB network
+
+  lb_network:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      resource_id: { get_input: lb_network }
+      use_external_resource : true 
+
+  lb_network_subnet:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      resource_id: { get_input: lb_network_subnet }
+      use_external_resource : true
+    relationships:
+      - target: lb_network
+        type: cloudify.relationships.contained_in
+
+  lb_network_port:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      use_external_resource : false
+      fixed_ip: 172.30.0.10
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: lb_network
+      - type: cloudify.relationships.depends_on
+        target: lb_network_subnet
+
+  server_float_ip:
+    type: cloudify.openstack.nodes.FloatingIP
+    properties:
+      floatingip:
+        floating_network_name: { get_input: external_network_name }
+
+  management_network:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: management_network_name }
+
+  management_subnet:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: management_subnet_name }
+    relationships:
+      - target: management_network
+        type: cloudify.relationships.contained_in
+
+  manager_port:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      use_external_resource: false
+      fixed_ip: 172.10.1.31
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: management_network
+      - type: cloudify.relationships.depends_on
+        target: management_subnet
+

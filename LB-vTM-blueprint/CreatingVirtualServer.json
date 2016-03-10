@@ -1,0 +1,150 @@
+{
+  "properties": {
+    "basic": {
+      "add_cluster_ip": true,
+      "add_x_forwarded_for": false,
+      "add_x_forwarded_proto": false,
+      "bandwidth_class": "",
+      "connect_timeout": 10,
+      "enabled": true,
+      "ftp_force_server_secure": true,
+      "glb_services": [],
+      "listen_on_any": false,
+      "listen_on_hosts": [],
+      "listen_on_traffic_ips": [
+        "Test-TIP"
+      ],
+      "note": "",
+      "pool": "Test-Pool",
+      "port": 80,
+      "protection_class": "",
+      "protocol": "http",
+      "request_rules": [],
+      "response_rules": [],
+      "slm_class": "",
+      "so_nagle": false,
+      "ssl_client_cert_headers": "none",
+      "ssl_decrypt": false
+    },
+    "aptimizer": {
+      "enabled": false,
+      "profile": []
+    },
+    "connection": {
+      "keepalive": true,
+      "keepalive_timeout": 10,
+      "max_client_buffer": 65536,
+      "max_server_buffer": 65536,
+      "server_first_banner": "",
+      "timeout": 40
+    },
+    "connection_errors": {
+      "error_file": "Default"
+    },
+    "cookie": {
+      "domain": "no_rewrite",
+      "new_domain": "",
+      "path_regex": "",
+      "path_replace": "",
+      "secure": "no_modify"
+    },
+    "ftp": {
+      "data_source_port": 0,
+      "force_client_secure": true,
+      "port_range_high": 0,
+      "port_range_low": 0,
+      "ssl_data": true
+    },
+    "gzip": {
+      "compress_level": 1,
+      "enabled": false,
+      "include_mime": [
+        "text/html",
+        "text/plain"
+      ],
+      "max_size": 10000000,
+      "min_size": 1000,
+      "no_size": true
+    },
+    "http": {
+      "chunk_overhead_forwarding": "lazy",
+      "location_regex": "",
+      "location_replace": "",
+      "location_rewrite": "if_host_matches",
+      "mime_default": "text/plain",
+      "mime_detect": false
+    },
+    "log": {
+      "client_connection_failures": false,
+      "enabled": false,
+      "filename": "%zeushome%/zxtm/log/%v.log",
+      "format": "%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\"",
+      "server_connection_failures": false,
+      "ssl_failures": false
+    },
+    "request_tracing": {
+      "enabled": false,
+      "trace_io": false
+    },
+    "rtsp": {
+      "streaming_port_range_high": 0,
+      "streaming_port_range_low": 0,
+      "streaming_timeout": 30
+    },
+    "sip": {
+      "dangerous_requests": "node",
+      "follow_route": true,
+      "max_connection_mem": 65536,
+      "mode": "sip_gateway",
+      "rewrite_uri": false,
+      "streaming_port_range_high": 0,
+      "streaming_port_range_low": 0,
+      "streaming_timeout": 60,
+      "timeout_messages": true,
+      "transaction_timeout": 30
+    },
+    "smtp": {
+      "expect_starttls": true
+    },
+    "ssl": {
+      "add_http_headers": false,
+      "client_cert_cas": [],
+      "issued_certs_never_expire": [],
+      "ocsp_enable": false,
+      "ocsp_issuers": [],
+      "ocsp_max_response_age": 0,
+      "ocsp_stapling": false,
+      "ocsp_time_tolerance": 30,
+      "ocsp_timeout": 10,
+      "prefer_sslv3": false,
+      "request_client_cert": "dont_request",
+      "send_close_alerts": true,
+      "server_cert_default": "",
+      "server_cert_host_mapping": [],
+      "trust_magic": false
+    },
+    "syslog": {
+      "enabled": false,
+      "format": "%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\"",
+      "ip_end_point": "",
+      "msg_len_limit": 1024
+    },
+    "tcp": {
+      "proxy_close": false
+    },
+    "udp": {
+      "end_point_persistence": true,
+      "port_smp": false,
+      "response_datagrams_expected": 1,
+      "timeout": 7
+    },
+    "web_cache": {
+      "control_out": "",
+      "enabled": false,
+      "error_page_time": 30,
+      "max_time": 600,
+      "refresh_time": 2
+    }
+  }
+}
+

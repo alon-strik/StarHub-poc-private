@@ -1,0 +1,13 @@
+///////// START OF INPUT ////////////
+{
+  "properties": {
+    "basic": {
+
+      "note": "",
+      "passive_monitoring": true,
+      "persistence_class": "Persistence",
+      "transparent": false
+    },
+  },
+}
+/////// END OF INPUT ///////////

@@ -1,0 +1,56 @@
+
+1) Access the portal at https://dsc.apj.dell.com and choose POC Realm as a default. Note that this will install a client on your laptop. As it is using Java, please avoid Chrome browser.
+
+2) Credential as below:
+-----------------------------------
+UserName: sivan
+Password: ND5rshH5
+Expiry Date: 22 Jan 2016
+
+UserName: shayn
+Password: QMgrQKpt
+Expiry Date: 22 Jan 2016
+
+UserName: tamir
+Password: dCE2AVrw
+Expiry Date: 22 Jan 2016
+
+UserName: jonathan
+Password: dxxHDqGg
+Expiry Date: 22 Jan 2016
+
+UserName: yoram
+Password: zCCKbc9g
+Expiry Date: 22 Jan 2016
+
+UserName: assaf
+Password: 2xunnysR
+Expiry Date: 22 Jan 2016
+
+UserName: alons
+Password: xd6QBgtL
+Expiry Date: 22 Jan 2016
+-----------------------------------
+
+3) Once connected, please do a remote desktop to any of the below jump hosts.
+-192.168.102.161
+-192.168.102.162
+
+User: Administrator
+Pass: Neratel123
+
+
+lab proxy :  192.168.102.2:8080
+
+
+Vio.shdemo.local  10.2.0.10
+
+username:  nfv-admin@shdemo.local
+password:  VMware1!
+
+Nova vCenter 10.0.1.50
+Neutron NSX  10.0.1.60
+external Net  -  VIO-External-01_VLAN301
+LDAP/DNS/NTP - 10.0.1.20
+
+

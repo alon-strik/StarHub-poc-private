@@ -1,0 +1,17 @@
+management_network_name: 'cloudify-management-network'
+application_network_name: 'Tenant-a-APPnetwork'
+application_network_subnet_name: 'Tenant-a-APPnetwork-subnet'
+lb_network_name: 'Tenant-a-LBnetwork'
+lb_network_subnet_name: 'Tenant-a-LBnetwork-subnet'
+application_network_subnet: '172.20.0.0/28'
+lb_network_subnet: '172.30.0.0/24'
+flavor_id: '3'
+agent_name: 'root'
+agent_password: 'password'
+private_key_name: '/root/.ssh/agent_key.pem'
+image_id: 'd869319e-165e-45d8-a9ea-afccb8d3959c' # centos no cloud-init with dtach
+webServer1_port: '172.20.0.5'
+webServer2_port: '172.20.0.6'
+lb_blueprint_id: f5-bigip
+fw_blueprint_id: firewall
+

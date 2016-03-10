@@ -1,0 +1,21 @@
+import os
+import sys
+import subprocess
+
+from cloudify import ctx
+
+PORT = 80
+
+def run_server():
+    webserver_cmd = [sys.executable, '-m', 'SimpleHTTPServer', str(PORT)]
+    if not IS_WIN:
+        webserver_cmd.insert(0, 'nohup')
+
+    ctx.logger.info('Running WebServer locally on port: {0}'.format(PORT))
+    # emulating /dev/null
+    with open(os.devnull, 'wb') as dn:
+        process = subprocess.Popen(webserver_cmd, stdout=dn, stderr=dn)
+    return process.pid
+
+
+pid = run_server()

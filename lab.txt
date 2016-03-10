@@ -1,0 +1,135 @@
+Cloudify UI :  http://10.2.101.157/
+
+-------------------------------------
+
+On jump host : 
+
+  check if this route exist : 
+
+  #>> route print
+
+  if it's not exist:
+
+  #>> route ADD 172.30.0.0/24 10.2.102.121  ( Vyatta VLNA302 )
+
+
+open browser - make sure proxy is off
+
+https://172.30.0.240:9090
+
+
+to generate traffic from browser: 
+
+http://172.30.0.240
+
+-----------------------------------
+
+Access load generator host: 
+
+from Jump host -   
+
+  #>> ssh root@10.2.102.143
+  VMware1!
+
+for traffic: 
+
+  #>> curl http://172.30.0.240
+
+-----------------------------
+all appliances credintials are : admin/admin
+web server credintials :  root/password
+
+
+  
+
+curl -v -H Content-Type:application/json -u admin:admin -k https://172.10.1.87:9070/api/tm/3.5/status/local_tm/statistics/globals
+
+total_requests
+total_transactions
+total_conn
+
+{
+	"statistics": {
+		"data_entries": 0,
+		"data_memory_usage": 2066488,
+		"events_seen": 58,
+		"hourly_peak_bytes_in_per_second": 76,
+		"hourly_peak_bytes_out_per_second": 383,
+		"hourly_peak_requests_per_second": 1,
+		"hourly_peak_ssl_connections_per_second": 0,
+		"num_idle_connections": 0,
+		"number_child_processes": 2,
+		"number_dnsa_cache_hits": 0,
+		"number_dnsa_requests": 0,
+		"number_dnsptr_cache_hits": 0,
+		"number_dnsptr_requests": 0,
+		"number_snmp_bad_requests": 0,
+		"number_snmp_get_bulk_requests": 0,
+		"number_snmp_get_next_requests": 0,
+		"number_snmp_get_requests": 0,
+		"number_snmp_unauthorised_requests": 0,
+		"ssl_cipher_3des_decrypts": 0,
+		"ssl_cipher_3des_encrypts": 0,
+		"ssl_cipher_aes_decrypts": 0,
+		"ssl_cipher_aes_encrypts": 0,
+		"ssl_cipher_aes_gcm_decrypts": 0,
+		"ssl_cipher_aes_gcm_encrypts": 0,
+		"ssl_cipher_decrypts": 0,
+		"ssl_cipher_des_decrypts": 0,
+		"ssl_cipher_des_encrypts": 0,
+		"ssl_cipher_dh_agreements": 0,
+		"ssl_cipher_dh_generates": 0,
+		"ssl_cipher_dsa_signs": 0,
+		"ssl_cipher_dsa_verifies": 0,
+		"ssl_cipher_ecdh_agreements": 0,
+		"ssl_cipher_ecdh_generates": 0,
+		"ssl_cipher_encrypts": 0,
+		"ssl_cipher_rc4_decrypts": 0,
+		"ssl_cipher_rc4_encrypts": 0,
+		"ssl_cipher_rsa_decrypts": 0,
+		"ssl_cipher_rsa_decrypts_external": 0,
+		"ssl_cipher_rsa_encrypts": 0,
+		"ssl_cipher_rsa_encrypts_external": 0,
+		"ssl_client_cert_expired": 0,
+		"ssl_client_cert_invalid": 0,
+		"ssl_client_cert_not_sent": 0,
+		"ssl_client_cert_revoked": 0,
+		"ssl_connections": 0,
+		"ssl_handshake_sslv2": 0,
+		"ssl_handshake_sslv3": 0,
+		"ssl_handshake_t_l_sv1": 0,
+		"ssl_handshake_t_l_sv11": 0,
+		"ssl_handshake_t_l_sv12": 0,
+		"ssl_session_id_disk_cache_hit": 0,
+		"ssl_session_id_disk_cache_miss": 0,
+		"ssl_session_id_mem_cache_hit": 0,
+		"ssl_session_id_mem_cache_miss": 0,
+		"sys_cpu_busy_percent": 1,
+		"sys_cpu_idle_percent": 98,
+		"sys_cpu_system_busy_percent": 0,
+		"sys_cpu_user_busy_percent": 1,
+		"sys_fds_free": 2097132,
+		"sys_mem_buffered": 30,
+		"sys_mem_free": 3504,
+		"sys_mem_in_use": 453,
+		"sys_mem_swap_total": 859,
+		"sys_mem_swapped": 0,
+		"sys_mem_total": 3958,
+		"time_last_config_update": 2523200,
+		"total_backend_server_errors": 0,
+		"total_bad_dns_packets": 0,
+		"total_bytes_in": 17167,
+		"total_bytes_in_hi": 0,
+		"total_bytes_in_lo": 17167,
+		"total_bytes_out": 16857,
+		"al_bytes_out_hi": 0,
+		"total_bytes_out_lo": 16857,
+		"total_conn": 17,
+		"total_current_conn": 0,
+		"total_dns_responses": 0,
+		"total_requests": 44,
+		"total_transactions": 0,
+		"up_time": 2523300
+	}
+}
+

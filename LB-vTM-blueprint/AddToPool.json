@@ -1,0 +1,21 @@
+{
+  "properties": {
+    "basic": {
+ 
+      "nodes_table": [
+        {
+          "node": "10.0.102.31:80",
+          "state": "active"
+        },
+        {
+          "node": "10.0.100.101:80",
+          "state": "active"
+        },
+        {
+          "node": "10.0.104.101:80",
+          "state": "active"
+        }
+      ],
+    },
+  },
+}

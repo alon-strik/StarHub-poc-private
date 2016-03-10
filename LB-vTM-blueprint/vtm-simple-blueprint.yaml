@@ -1,0 +1,84 @@
+tosca_definitions_version: cloudify_dsl_1_2
+
+imports:
+    - http://www.getcloudify.org/spec/cloudify/3.3.1/types.yaml
+    - http://www.getcloudify.org/spec/fabric-plugin/1.3.1/plugin.yaml
+    - plugins/cloudify-vtm-plugin/plugin.yaml
+
+inputs:
+
+  agent_user:
+    default: admin
+  agent_password:
+    default: admin
+  host_ip:
+    default: ''
+  agent_private_key_path:
+    default: ''
+
+  internal_port:
+    default: '10.10.1.10'
+  external_port:
+    default: '172.10.1.10'
+
+node_types:
+
+  vtm.nodes.Server:
+    derived_from: cloudify.nodes.Compute
+
+  vtm.port:
+    derived_from: cloudify.nodes.Port
+    properties:
+      ip:
+        default: ''
+
+  vtm.pool.config:
+      derived_from: cloudify.nodes.ApplicationServer
+      interfaces:
+        cloudify.interfaces.lifecycle:
+          configure:
+             implementation: vtm.vtm_plugin.tasks.server_pool_local_config
+             executor: central_deployment_agent
+
+  vtm.port.config:
+    derived_from: cloudify.nodes.ApplicationServer
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        configure:
+           implementation: vtm.vtm_plugin.tasks.port_local_config
+           executor: central_deployment_agent
+
+
+node_templates:
+
+  vtmHost:
+    type: vtm.nodes.Server
+    properties:
+      ip: { get_input: host_ip }
+      install_agent: false
+
+  vtmPoolServerConfig:
+    type: vtm.pool.config
+    relationships:
+      - target: vtmHost
+        type: cloudify.relationships.contained_in
+
+  vtmPortConfig:
+    type: vtm.port.config
+    relationships:
+      - target: external_network
+        type: cloudify.relationships.connected_to
+      - target: internal_network
+        type: cloudify.relationships.connected_to
+      - target: vtmHost
+        type: cloudify.relationships.contained_in
+
+  internal_network:
+    type: vtm.port
+    properties:
+      ip: { get_input: internal_port }
+
+  external_network:
+    type: vtm.port
+    properties:
+      ip: { get_input: external_port }

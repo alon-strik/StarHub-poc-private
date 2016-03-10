@@ -1,0 +1,12 @@
+{
+  "properties": {
+    "basic": {
+
+      "note": "",
+      "passive_monitoring": true,
+      "persistence_class": "Persistence",
+      "transparent": false
+    },
+  },
+}
+

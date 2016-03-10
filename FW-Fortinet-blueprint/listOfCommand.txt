@@ -1,0 +1,54 @@
+On Image --
+
+config system central-management
+  set type fortimanager
+  set fmg 10.0.5.90
+  set include-default-servers disable
+
+  configure server-list
+  edit 1
+      set server-type update
+      set server-address 10.0.5.90
+  end
+end
+
+------------------------------------
+
+* CreateStaticRouting
+
+  config router static
+    edit 1
+        set dst  0.0.0.0/24
+        set gateway  192.168.122.1
+        set device port2
+  end
+
+* Create Firewall Address
+
+  configure firewall address
+    edit rule1
+        set subnet 192.168.122.1/24
+        set associated‐interface port2
+  end
+
+
+* Create Firewall Service
+
+  config firewall service custom
+     edit firewallServer
+         set protocol "TCP"
+         set tcp‐portrange 50-1000
+  end
+
+
+* Create Firewall Policy
+
+  configure firewall policy
+    edit 1
+        set srcintf port2
+        set dstintf port3
+        set srcaddr all
+        set dstaddr sll
+        set service firewallServer
+        set action  accept
+        set schedule always

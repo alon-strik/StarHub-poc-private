@@ -1,0 +1,39 @@
+{
+  "properties": {
+    "basic": {
+      "authenticationServerIP": "172.30.0.10",
+      "nameip": "172.30.0.10",
+    },
+    "appliance": {
+      "gateway_ipv4": "172.30.0.1",
+      "hostname": "CFY-VNF",
+      "hosts": [],
+      "if": [
+        {
+          "name": "eth0",
+          "autoneg": true,
+          "mtu": 1500
+        },
+        {
+          "name": "eth1",
+          "autoneg": true,
+          "mtu": 1500
+        },
+      ],
+      "ip": [
+        {
+          "name": "eth0",
+          "addr": "172.10.1.31",
+          "isexternal": false,
+          "mask": "255.255.255.0"
+        },
+        {
+          "name": "eth1",
+          "addr": "172.30.0.10",
+          "isexternal": false,
+          "mask": "255.255.255.0"
+        }
+      ]
+    }
+  }
+}

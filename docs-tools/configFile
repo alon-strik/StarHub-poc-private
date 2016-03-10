@@ -1,0 +1,10 @@
+config system global
+	set hostname “FortigateVM-01”
+	set admin-scp enable
+end
+config system interface
+	edit port1
+		set alias “Mgmt”
+		set allowaccess ping http ssh https
+	end
+end

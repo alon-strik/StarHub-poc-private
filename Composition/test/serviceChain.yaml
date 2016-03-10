@@ -1,0 +1,220 @@
+tosca_definitions_version: cloudify_dsl_1_2
+
+imports:
+  - http://10.60.0.12:8000/cloudify-types.yaml
+  - http://10.60.0.12:8000/fabric-plugin.yaml
+  - http://10.60.0.12:8000/openstack-plugin.yaml
+  - plugins/cloudify-proxy-plugin/plugin.yaml
+
+inputs:
+
+  application_network_name:
+    default: APPnetwork
+    type: string
+
+  application_network_subnet_name:
+    default: APPnetwork-subnet
+    type: string
+
+  lb_network_name:
+    default: LBnetwork
+    type: string
+
+  lb_network_subnet_name:
+    default: LBnetwork-subnet
+    type: string
+
+  image_id:
+    default: '3cc7d237-2009-48a8-8dee-cb956d70f057' # agent centos 7
+    type: string
+
+  flavor_id:
+    default: '3'
+    type: string
+
+  lb_blueprint_id:
+    default: vtm-blueprint
+    type: string
+    description: Load Balancer blueprint ID
+
+  fw_blueprint_id:
+    default: fortinet-blueprint
+    type: string
+    description: FW blueprint ID
+
+node_templates:
+
+# Create an Application Network
+
+  application_network:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      resource_id: { get_input: application_network_name }
+      use_external_resource : false
+
+  application_network_subnet:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      resource_id: { get_input: application_network_subnet_name }
+      use_external_resource : false
+      subnet:
+        ip_version: 4
+        cidr: 172.20.0.0/29
+        gateway_ip: 172.20.0.1
+    relationships:
+      - target: application_network
+        type: cloudify.relationships.contained_in
+
+# Create a LB Network
+
+  lb_network:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      resource_id: { get_input: lb_network_name }
+      use_external_resource : false
+
+  lb_network_subnet:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      resource_id: { get_input: lb_network_subnet_name }
+      use_external_resource : false
+      subnet:
+        ip_version: 4
+        cidr: 172.30.0.0/24
+        gateway_ip: 172.30.0.1
+    relationships:
+      - target: lb_network
+        type: cloudify.relationships.contained_in
+
+
+# Create an Application VM
+
+  webServer1:
+    type: cloudify.openstack.nodes.Server
+    properties:
+      install_agent: true
+      server:
+        image: { get_input: image_id }
+        flavor: { get_input: flavor_id }
+    relationships:
+      - target: application_network
+        type: cloudify.relationships.connected_to
+      - target: fw_deployment
+        type: cloudify.relationships.connected_to
+
+  webServer2:
+    type: cloudify.openstack.nodes.Server
+    properties:
+      install_agent: true
+      server:
+        image: { get_input: image_id }
+        flavor: { get_input: flavor_id }
+    relationships:
+      - target: application_network
+        type: cloudify.relationships.connected_to
+      - target: webServer1
+        type: cloudify.relationships.depends_on
+
+  webServer1.SoftwareComponent:
+    type: cloudify.nodes.SoftwareComponent
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        start:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            script_path: scripts/setWebServer.sh
+            fw_ip: { get_attribute: [ fw_proxy_deployment, fw_ip2 ]} 
+
+    relationships:
+      - target: webServer1
+        type: cloudify.relationships.contained_in
+
+  webServer2.SoftwareComponent:
+    type: cloudify.nodes.SoftwareComponent
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        start:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            script_path: scripts/setWebServer.sh
+            fw_ip: { get_attribute: [ fw_proxy_deployment, fw_ip2 ]} 
+
+    relationships:
+      - target: webServer2
+        type: cloudify.relationships.contained_in
+
+
+  lb_deployment:
+      type: cloudify.nodes.BlueprintDeployment
+      properties:
+        blueprint_id: { get_input: lb_blueprint_id }
+      interfaces:
+        cloudify.interfaces.lifecycle:
+          create:
+            inputs:
+              deployment_inputs:
+                lb_network: { get_property: [ lb_network, resource_id ] }
+                lb_network_subnet: { get_property: [ lb_network_subnet, resource_id ] }
+                vm_list: [ { get_attribute: [ webServer1, ip ], get_attribute: [ webServer2, ip ] } ]
+
+      relationships:
+        - target: webServer1
+          type: cloudify.relationships.connected_to
+
+        - target: webServer2
+          type: cloudify.relationships.connected_to
+
+        - target: lb_network
+          type: cloudify.relationships.connected_to
+
+# Chain FW blueprint
+
+  fw_deployment:
+        type: cloudify.nodes.BlueprintDeployment
+        properties:
+          blueprint_id: { get_input: fw_blueprint_id }
+        interfaces:
+          cloudify.interfaces.lifecycle:
+            create:
+              inputs:
+                deployment_inputs:
+                  lb_network: { get_property: [ lb_network, resource_id ] }
+                  lb_network_subnet: { get_property: [ lb_network_subnet, resource_id ] }
+                  app_network: { get_property: [ application_network, resource_id ] }
+                  app_network_subnet: { get_property: [ application_network_subnet, resource_id ] }
+
+        relationships:
+          - target: lb_network
+            type: cloudify.relationships.connected_to
+
+          - target: application_network
+            type: cloudify.relationships.connected_to
+
+  fw_proxy_deployment:
+        type: cloudify.nodes.DeploymentProxy
+        properties:
+          inherit_outputs:
+            - 'fw_ip2'
+        interfaces:
+          cloudify.interfaces.lifecycle:
+            create:
+              inputs:
+                deployment_id: { get_attribute: [ fw_deployment, deployment_id ]}
+            start:
+              inputs:
+                deployment_id: { get_attribute: [ fw_deployment, deployment_id ]}
+            stop:
+              inputs:
+                deployment_id: { get_attribute: [ fw_deployment, deployment_id ]}
+        relationships:
+          - target: fw_deployment
+            type: cloudify.relationships.connected_to
+
+
+outputs:
+  web_netips:
+    value:
+      web1: { get_attribute: [ webServer1, ip ] }
+      web2: { get_attribute: [ webServer2, ip ] }
+
+   

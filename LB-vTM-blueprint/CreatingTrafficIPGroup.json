@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "basic": {
+      "enabled": true,
+      "hash_source_port": false,
+      "ip_mapping": [],
+      "ipaddresses": [
+        "10.0.102.55"
+      ],
+      "keeptogether": false,
+      "location": 0,
+
+      "mode": "singlehosted",
+      "multicast": "239.101.1.1",
+      "note": "",
+      "slaves": []
+    }
+  }
+}
+

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+## Vyatta REST commands
+
 import re
 import urllib
 import requests
